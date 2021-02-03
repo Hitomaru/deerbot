@@ -11,4 +11,12 @@ defmodule Deerbot.Commands do
   Cogs.def repo do
     Cogs.say Application.fetch_env!(:deerbot, :repo_url)
   end
+
+  Cogs.def choice do
+    {_command, selections} = message.content |> String.split() |> Enum.split(1)
+    case selections |> Enum.count() do
+      n when n in 0..1 -> Cogs.say("選びようがないですね！")
+      _ -> selections |> Enum.random() |> Cogs.say()
+    end
+  end
 end
