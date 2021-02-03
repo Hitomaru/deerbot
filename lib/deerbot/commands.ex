@@ -19,4 +19,11 @@ defmodule Deerbot.Commands do
       _ -> selections |> Enum.random() |> Cogs.say()
     end
   end
+
+  Cogs.def todaysfood do
+    food_name = Application.fetch_env!(:deerbot, :foods) |> Enum.random()
+    "#{food_name} \n https://ja.wikipedia.org/wiki/#{food_name}"
+    |> Cogs.say()
+  end
+
 end
