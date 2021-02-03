@@ -26,4 +26,36 @@ defmodule Deerbot.Commands do
     |> Cogs.say()
   end
 
+  @dice_error_message "`!dice {面数(1～999)} {個数(1～99)}` の記法で入力してください"
+  Cogs.def dice do
+    Cogs.say(@dice_error_message)
+  end
+  Cogs.def dice(_) do
+    Cogs.say(@dice_error_message)
+  end
+  Cogs.def dice(dice_max, dice_count) do
+    format = fn (values, max, count) -> "#{max}d#{count}: (#{values |> Enum.join(",")}) -> #{values |> Enum.sum()}" end
+    case {dice_max |> parse_to_integer(), dice_count |> parse_to_integer()} do
+      {{:ok, max}, {:ok, count}} when max < 1000 and count < 100 ->
+        fn () -> 1..max |> Enum.random() end
+        |> Stream.repeatedly()
+        |> Enum.take(count)
+        |> format.(max, count)
+        |> Cogs.say()
+      _ ->
+        Cogs.say(@dice_error_message)
+    end
+  end
+  Cogs.def dice(_, _ , _) do
+    Cogs.say(@dice_error_message)
+  end
+
+  @spec parse_to_integer(String.t()) :: {:ok, integer() } | {:error, atom()}
+  defp parse_to_integer(string) do
+    case string |> Integer.parse() do
+      :error -> { :error, :not_a_number }
+      {value, _remain} -> { :ok, value }
+    end
+  end
+
 end
