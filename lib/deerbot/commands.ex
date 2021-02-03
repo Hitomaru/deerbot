@@ -2,7 +2,17 @@ defmodule Deerbot.Commands do
   use Alchemy.Cogs
 
   alias Alchemy.Cogs
-  @reaction_phrase Application.fetch_env!(:deerbot, :discord_token)
+  @reaction_phrase Application.fetch_env!(:deerbot, :reaction_phrase)
+
+  Cogs.def deerhelp do
+    Cogs.say """
+     !deer: ｼｶｯｼｶｯとリアクションします
+     !choice A B C... 列挙された単語の中からランダムで一つを返します。何かを適当に選びたいときにどうぞ
+     !todaysfood おすすめのご飯を表示します
+     !dice n m n面ダイスをm個投げたときの結果を返します。999面ダイスを99個投げるところまで対応
+     !repo: botのソースコードが置かれたリポジトリへのリンクを表示します
+    """
+  end
 
   Cogs.def deer do
     Cogs.say @reaction_phrase
@@ -19,6 +29,15 @@ defmodule Deerbot.Commands do
       _ -> selections |> Enum.random() |> Cogs.say()
     end
   end
+
+  # Cogs.def choice(selections) do
+  #   IO.inspect(selections)
+  #   # {_command, selections} = message.content |> String.split() |> Enum.split(1)
+  #   # case selections |> Enum.count() do
+  #   #   n when n in 0..1 -> Cogs.say("選びようがないですね！")
+  #   #   _ -> selections |> Enum.random() |> Cogs.say()
+  #   # end
+  # end
 
   Cogs.def todaysfood do
     food_name = Application.fetch_env!(:deerbot, :foods) |> Enum.random()
